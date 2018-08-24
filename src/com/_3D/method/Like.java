@@ -119,8 +119,8 @@ public class Like {
 		float zhong = 0f;
 		int buzhong = 0;
 		int how = 4;
-		int begin = 3000;
-		int end = 3300;
+		int begin = 2000;
+		int end = 3000;
 		int[] num = Number1.num;
 		for (int i = begin; i < end; i++) {
 			Set<Integer> chazhis = lineLike(i, how, num,false);//可以排除多少个数
@@ -144,6 +144,8 @@ public class Like {
 			}
 		}
 		System.out.println(zhong / (end - begin) + " 不中：" + buzhong);
+		//虽然概率不变，但花的钱少了
+		//福彩3D广州单注奖金是1040（数字和顺序完全对应），成本2
 	}
 
 }
