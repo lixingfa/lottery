@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>福彩3D</title>
+<script src="js/jquery-1.8.0.js"></script>
+<script src="data/3d/GanZhi.js"></script>
+<script src="data/3d/Number1.js"></script>
+<script src="data/3d/Number2.js"></script>
+<script src="data/3d/Number3.js"></script>
+<script src="data/3d/NumDate.js"></script>
+<script src="data/3d/Periods.js"></script>
+<script src="data/3d/show.js"></script>
+<script src="data/3d/test.js"></script>
+<link type="text/css" rel="stylesheet" href="css/style.css"/>
+</head>
+
+<body>
+<div id="tool">
+	<div>
+        干<select id="gan">
+            <option value="0"></option>
+            <option value="1">甲</option>
+            <option value="2">乙</option>
+            <option value="3">丙</option>
+            <option value="4">丁</option>
+            <option value="5">戊</option>
+            <option value="6">己</option>
+            <option value="7">庚</option>
+            <option value="8">辛</option>
+            <option value="9">壬</option>
+            <option value="10">癸</option>
+        </select>
+        支<select id="zhi">
+            <option value="0"></option>
+            <option value="1">子</option>
+            <option value="2">丑</option>
+            <option value="3">寅</option>
+            <option value="4">卯</option>
+            <option value="5">辰</option>
+            <option value="6">巳</option>
+            <option value="7">午</option>
+            <option value="8">未</option>
+            <option value="9">申</option>
+            <option value="10">酉</option>
+            <option value="11">戌</option>
+            <option value="12">亥</option>
+        </select>
+        <button onclick="search();">搜索</button>
+    </div>
+    <div>
+        显示:
+    </div>
+    <div>
+        测试：
+        当前期数<input id="now" value="5"/>
+        运算期数<input id="how" value="10"/>
+        <button onclick="test();">测试</button>
+    </div>
+</div>
+<table border="0" cellpadding="0" cellspacing="0" class="dataTable">
+	<thead>
+    	<td>期数</td><td>日期</td><td>干支</td><td>百位</td><td>十位</td><td>个位</td><td>和值</td>
+        <td>百五</td><td>十五</td><td>个五</td><td>和五</td>
+    </thead>
+	<tbody id="data">
+    </tbody>
+    <tfoot></tfoot>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" class="dataTable">
+	<thead>
+        <td>百五</td><td>十五</td><td>个五</td><td>和五</td><td>剩余</td>
+    </thead>
+	<tbody id="dataTest">
+    	<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+    <tfoot></tfoot>
+</table>
+</body>
+</html>
