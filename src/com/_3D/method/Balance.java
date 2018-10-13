@@ -20,8 +20,9 @@ public class Balance {
 	 * @param scope 数据的范围
 	 */
 	public static void info(int[] num,int start,int end,int now){
-		int length = 500 - 1;
+		int length = 601 - 1;
 		float total = 0;
+		float minTotal = 0;
 		for (int i = now; i < length; i++) {
 			Map<Integer, Integer> yl = YiLou.getYiLou(start, end, i, num);//当前遗漏排序
 			Entry<Integer, Integer> max = YiLou.getMaxYL(yl);
@@ -32,8 +33,12 @@ public class Balance {
 			Map<Integer, Float> fb100 = YiLou.getFenBu(i - 100, i, start, end, num);
 			Map<Integer, Float> fbav = new HashMap<Integer, Float>();
 			for (int j : fb.keySet()) {
-				fbav.put(j, (fb.get(j) + fb20.get(j) + fb30.get(j) + fb50.get(j) + fb100.get(j)) / 5);
-			}			
+				float a = (fb.get(j) + fb20.get(j) + fb30.get(j) + fb50.get(j) + fb100.get(j)) / 5;
+				fbav.put(j, a);
+				if (a < 1) {
+					minTotal++;
+				}
+			}
 			System.out.println(Periods.periods[i]);
 			System.out.println(yl + ",max" + max);
 			System.out.println(fb);
@@ -46,7 +51,8 @@ public class Balance {
 			}
 			System.out.println(fbav + " next:" + num[i + 1]);
 		}
-		System.out.println(total + "/" + (length - now) + " " + total / (length - now));
+		System.out.println(total + "/" + (length - now) + "=" + total / (length - now) 
+				+ " " + minTotal + "/" + ((length - now) * 10) + "=" + minTotal / ((length - now) * 10));
 	}
 	
 	public static void check(int[] num,int scope){
