@@ -3,8 +3,10 @@ package com.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com._3D.number.Number1;
+import com._3D.number.Periods;
 
 /**
  * 遗漏类方法的工具类
@@ -13,110 +15,84 @@ import com._3D.number.Number1;
  */
 public class YiLou {
 	
-	public static int[] getYiLou(int scope,int now,int[] num) {
-		int[] yl = new int[scope];
-		boolean[] has = new boolean[10];//如果已经出现过，就不用计算遗漏
-		for (int i = now; i >= 0; i--) {
-			int nowNum = num[i];
-			has[nowNum] = true;
-			boolean find = false;
-			for (int j = 0; j < has.length; j++) {
-				if (!has[j]) {//有未找到的
-					find = true;//继续找
-					break;
-				}
-			}
-			if (find) {
-				for (int j = 0; j < scope; j++) {
-					if (!has[j]) {
-						yl[j]++;					
+	/**
+	 * 获取遗漏
+	 * @param star 数字开始的值
+	 * @param end 数字结束的值
+	 * @param index 当前位置
+	 * @param num 出现数字的数组
+	 * @return Map<Integer, Integer> 每个数字的遗漏
+	 */
+	public static Map<Integer, Integer> getYiLou(int start,int end,int index,int[] num) {
+		Map<Integer, Integer> yl = new HashMap<Integer, Integer>();
+		Map<Integer, Boolean> find = new HashMap<Integer, Boolean>();
+		for (int i = start; i <= end; i++) {
+			find.put(i, false);
+			yl.put(i, 0);
+		}
+		for (int i = index; i >= 0; i--) {
+			find.put(num[i], true);
+			if (find.containsValue(false)) {
+				for (int j = start; j <= end; j++) {
+					if (!find.get(j)) {
+						yl.put(j, yl.get(j) + 1);
 					}
-				}				
+				}
+			}else {
+				break;
 			}
 		}
 		return yl;
 	}
-
-	public static Map<Integer, Integer> getMaxYiLouOrder(int scope,int now,int[] num){
-		Map<Integer, Integer> ylMap = new HashMap<Integer, Integer>();
-		int[] yl = getYiLou(scope, now, num);//获取遗漏
-		boolean[] hasGet = new boolean[yl.length];//依次取遗漏最大的，取了的就不用再取
-		int max = 0;
-		int index = 0;
-		for (int i = 0; i < yl.length; i++) {
-			for (int j = 0; j < yl.length; j++) {
-				if (max <= yl[j] && !hasGet[j]) {
-					max = yl[j];
-					index = j;
-				}				
+	
+	/**
+	 * 获取最大的遗漏
+	 * @param yl
+	 * @return Entry<Integer, Integer>
+	 */
+	public static Entry<Integer, Integer> getMaxYL(Map<Integer, Integer> yl){
+		Entry<Integer, Integer> max = null;
+		int m = 0;
+		for (Entry<Integer, Integer> entry : yl.entrySet()) {
+			if (entry.getValue() > m) {
+				m = entry.getValue();
+				max = entry;
 			}
-			//本次最大的
-			ylMap.put(i, index);
-			hasGet[index] = true;
-			max = 0;
-			index = 0;
 		}
-		return ylMap;
+		return max;
 	}
 	
-	public static Map<Integer, Integer>[] getYiLouInfo(int scope,int now,int[] num){
-		Map<Integer, Integer>[] infoMaps = new HashMap[10];
-		for (int i = 0; i < infoMaps.length; i++) {
-			infoMaps[i] = new HashMap<Integer, Integer>();
+	/** 各个数字在指定范围内的分布
+	 * @param begin
+	 * @param now
+	 * @param start
+	 * @param end
+	 * @param num
+	 * @return
+	 */
+	public static Map<Integer, Float> getFenBu(int begin,int now,int start,int end,int[] num){
+		Map<Integer, Float> fb = new HashMap<Integer, Float>();
+		for (int i = start; i <= end; i++) {
+			fb.put(i, 0f);
 		}
-		int end = num.length - 1;
-		for (int i = now; i < end; i++) {
-			int[] yl = getYiLou(scope, i, num);
-			int next = num[i + 1];
-			if(infoMaps[next].containsKey(yl[next])){
-				infoMaps[next].put(yl[next], infoMaps[next].get(yl[next]) + 1);
-			}else {
-				infoMaps[next].put(yl[next], 1);
-			}
+		for (int i = begin + 1; i <= now; i++) {
+			fb.put(num[i], fb.get(num[i]) + 1);
 		}
-		for (int i = 0; i < infoMaps.length; i++) {
-			System.out.println();
-			System.out.print(infoMaps[i]);
-			
+		/*float total = 0;
+		for (int i = start; i <= end; i++) {
+			total = total + fb.get(i);
+		}*/
+		for (int i = start; i <= end; i++) {
+			fb.put(i, Float.parseFloat(String.format("%.3f", fb.get(i) / (now - begin + 1) * 10) ));			
 		}
-		return infoMaps;
-	}
-	
-	public static Map<Integer, Integer>[] getEachYiLou(int scope,int[] num){
-		Map<Integer, Integer>[] maps = new Map[scope];
-		ArrayList<Integer>[] list = new ArrayList[scope];
-		for (int i = 0; i < maps.length; i++) {
-			maps[i] = new HashMap<Integer, Integer>();
-			list[i] = new ArrayList<Integer>();
-		}
-		int[] yilou = new int[scope];//遗漏
-		for (int i = 0; i < num.length; i++) {
-			list[num[i]].add(yilou[num[i]]);
-			if (maps[num[i]].containsKey(yilou[num[i]])) {
-				maps[num[i]].put(yilou[num[i]], maps[num[i]].get(yilou[num[i]]) + 1);
-			}else {
-				maps[num[i]].put(yilou[num[i]], 1);
-			}
-			for (int j = 0; j < yilou.length; j++) {
-				yilou[j]++;
-			}
-			yilou[num[i]] = 0;
-			
-		}
-		for (int i = 0; i < maps.length; i++) {
-			System.out.println(maps[i]);
-			for (int j = 0; j < list[i].size(); j++) {
-				System.out.print(list[i].get(j) + ",");
-			}
-			System.out.println();
-		}
-		System.out.println("从每个数字间隔的统计，可以看到疏密排布。");
-		return maps;
+		return fb;
 	}
 	
 	public static void main(String[] args) {
 //		getMaxYiLouOrder(10, 3973, Number1.num);//2016037
 //		getYiLouInfo(10, 100, Number1.num);
-		getEachYiLou(10, Number1.num);
+//		getEachYiLou(10, Number1.num);
+		Map<Integer, Integer> yl = getYiLou(0,9, 1000, Number1.num);
+		System.out.println(Periods.periods[1000] + yl + " max:" + getMaxYL(yl));
 	}
 }
