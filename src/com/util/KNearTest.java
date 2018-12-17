@@ -36,10 +36,29 @@ public class KNearTest {
 				for (int k = 1; k < how; k++) {
 					d[k] = Math.abs(num[i][j] - num[i - k][j]);
 				}
-				//比较距离
+				//比较距离,k-近似值算法
 				
 			}
 		}
+	}
+	
+	private int getDist(int[] d,int[][][] dist,int j){
+		int max = 10000;
+		int dtemp = 0;
+		int next = 0;
+		for (int i = 0; i < dist.length; i++) {
+			for (int k = 1; k < d.length; k++) {
+				dtemp = dtemp + Math.abs(d[k] - dist[i][j][k]);				
+			}
+			if (dtemp < max) {
+				max = dtemp;
+				next = dist[i][j][0];
+				if (max <= 3) {
+					return next;
+				}
+			}
+		}
+		return next;
 	}
 	
 	public static void main(String[] args) {
