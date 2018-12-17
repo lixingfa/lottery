@@ -97,7 +97,8 @@ public class Combine {
 	           
 	        return result;   
 	    }   
-	    //获取当前组合，1表示选中
+	    
+	    /**获取当前组合，1表示选中*/
 	    private static Set<Integer> getNowCombine(Integer[] bs,Integer[] a,int m){
 	    	Set<Integer> result = new HashSet<Integer>();
 	    	for(int i = 0;i < bs.length; i++){
@@ -107,10 +108,35 @@ public class Combine {
 	    	}
 	    	return result ;
 	    }
+	    
+	    /**
+	     * getRandomCombine:(从数组中随机获取一个长度为m的子集)
+	     * @author lixingfa
+	     * @date 2018年12月17日下午4:03:34
+	     * @param a 可选取的数组
+	     * @param m 子集的长度
+	     * @return 子集
+	     */
+	    public static Integer[] getRandomCombine(Integer[] a,int m){
+	    	List<Integer> sub = new ArrayList<Integer>(m);
+	    	int index = m - 1;
+	    	while (true) {
+				int temp = a[(int)(Math.random() * a.length)];
+				if (!sub.contains(temp)) {
+					sub.add(temp);
+					index--;
+					if (index < 0) {
+						break;
+					}
+				}
+			}	    	
+	    	return sub.toArray(new Integer[]{});
+	    }
+	    
+	    	
 	    public static void main(String[] args) {
-//			Integer[] scope = {1,2,3,4};
-//			getAllCombine(scope, 2);
-	    Integer[] scope = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
-		getAllCombine(scope, 6);
+		    Integer[] scope = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
+//			getAllCombine(scope, 6);
+	    	getRandomCombine(scope, 6);
 		}
 }
