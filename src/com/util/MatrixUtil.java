@@ -20,7 +20,7 @@ public class MatrixUtil {
 		matrix.print(4, 2);//打印矩阵，第一个参数是每列的宽度，第二个参数是保留的小数点位数
 		
 		matrix.set(0, 0, 2);//设置第一行第一列的数值
-		matrix.print(3, 0);		
+		matrix.print(3, 0);//打印矩阵，第一个参数是每列的宽度，第二个参数是保留的小数点位数
 		matrix.getMatrix(0, 1, 0, 1);//取矩阵第一列元素，第一、第二个参数表示行的开始和结束，第三第四个参数表示列的开始和结束
 		
 		double[][] t={{5,6},{7,8}};
@@ -30,10 +30,14 @@ public class MatrixUtil {
 		add.print(0, 0);
 		//减法
 		Matrix minus = matrix.minus(matrixt);
+		minus.print(0, 0);
 		//乘
 		Matrix times = matrix.times(matrixt);
+		times.print(0, 0);
 		//除
 		Matrix divide = matrix.arrayLeftDivide(matrixt);
+		divide.print(0, 0);
 		
+		//求平方和，最后用Math.sqrt()开方
 	}
 }
