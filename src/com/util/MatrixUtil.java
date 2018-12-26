@@ -2,17 +2,9 @@
  * 
  */
 package com.util;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import Jama.Matrix;
 
@@ -25,31 +17,10 @@ public class MatrixUtil {
 
 	
 	public static void main(String[] args) {
-		double[][] d={{1,2},{3,4}};
-		
-		Matrix matrix = new Matrix(d);
-		matrix.print(4, 2);//打印矩阵，第一个参数是每列的宽度，第二个参数是保留的小数点位数
-		
-		matrix.set(0, 0, 2);//设置第一行第一列的数值
-		matrix.print(3, 0);//打印矩阵，第一个参数是每列的宽度，第二个参数是保留的小数点位数
-		matrix.getMatrix(0, 1, 0, 1);//取矩阵第一列元素，第一、第二个参数表示行的开始和结束，第三第四个参数表示列的开始和结束
-		
-		double[][] t={{5,6},{7,8}};
-		Matrix matrixt = new Matrix(t);
-		//加
-		Matrix add = matrix.plus(matrixt);
-		add.print(0, 0);
-		//减法
-		Matrix minus = matrix.minus(matrixt);
-		minus.print(0, 0);
-		//乘
-		Matrix times = matrix.times(matrixt);
-		times.print(0, 0);
-		//除
-		Matrix divide = matrix.arrayLeftDivide(matrixt);
-		divide.print(0, 0);
-		
-		//求平方和，最后用Math.sqrt()开方
+		double[][] data = {{0,5,3,4,2}};
+		double[][][] know = {{{1,3,5,7,3}},{{1,3,5,7,3}},{{1,4,2,7,2}},{{2,5,9,4,9}},{{1,1,6,2,2}}};
+		int[] result = {1,4,9,3};
+		new MatrixUtil().KNN(data, know, result, 2);
 	}
 	
 	/**
@@ -67,11 +38,16 @@ public class MatrixUtil {
 		for (int i = 0;i < know.length;i++) {
 			Matrix tMatrix = new Matrix(know[i]);
 			tMatrix = tMatrix.minus(now);//相减
-			tMatrix = tMatrix.times(tMatrix);//平方
+			//平方
+			double[][] t = tMatrix.getArray();
+			for (int j = 0; j < t.length; j++) {
+				for (int k = 0; k < t[j].length; k++) {
+					t[j][k] = t[j][k] * t[j][k];
+				}
+			}
 			//求和
 			double sum = 0;
-			double[][] tArray = tMatrix.getArray();
-			for (double[] ds : tArray) {
+			for (double[] ds : t) {
 				for (double d : ds) {
 					sum = sum + d;
 				}
