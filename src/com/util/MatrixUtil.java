@@ -3,6 +3,17 @@
  */
 package com.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import Jama.Matrix;
 
 /**
@@ -39,5 +50,127 @@ public class MatrixUtil {
 		divide.print(0, 0);
 		
 		//求平方和，最后用Math.sqrt()开方
+	}
+	
+	/**
+	 * getNearSort:(获取待测数据最可能结果的map)
+	 * @author lixingfa
+	 * @date 2018年12月26日下午3:10:26
+	 * @param data 要预测的数据
+	 * @param know 已知的数据
+	 * @param result 已知数据的结果
+	 * @return Map<Double, Integer> key 与已知数据的距离，value 已知数据的结果
+	 */
+	private Map<Double, Integer> getNearSort(double[][] data,double[][][] know,int[] result){
+		Matrix now = new Matrix(data);
+		Map<Double, Integer> sqrts = new HashMap<Double, Integer>();//装距离和结果的map 
+		for (int i = 0;i < know.length;i++) {
+			Matrix tMatrix = new Matrix(know[i]);
+			tMatrix = tMatrix.minus(now);//相减
+			tMatrix = tMatrix.times(tMatrix);//平方
+			//求和
+			double sum = 0;
+			double[][] tArray = tMatrix.getArray();
+			for (double[] ds : tArray) {
+				for (double d : ds) {
+					sum = sum + d;
+				}
+			}
+			//开方
+			sum = Math.sqrt(sum);
+			sqrts.put(sum, result[i]);//装结果
+		}
+		//对结果map进行排序
+		sqrts = sortMapByKey(sqrts);
+		return sqrts;
+	}
+	
+	/**
+	 * KNN:(前K)
+	 * @author lixingfa
+	 * @date 2018年12月26日下午4:04:15
+	 * @param data 要预测的数据
+	 * @param know 已知的数据
+	 * @param result 已知数据的结果
+	 * @param k 取前k个里出现最多的
+	 */
+	private Integer KNN(double[][] data,double[][][] know,int[] result,int k){
+		Map<Double, Integer> sqrts = getNearSort(data, know, result);
+		int i = 0;
+		Map<Integer, Integer> kResult = new HashMap<Integer, Integer>();
+		for (Entry<Double, Integer> entry : sqrts.entrySet()) {
+			if (i < k) {
+				int v = entry.getValue();
+				if (kResult.containsKey(v)) {
+					kResult.put(v, kResult.get(v) + 1);
+				}else {
+					kResult.put(v, 1);					
+				}
+			}
+			i++;
+		}
+		//按值排序
+		kResult = sortMapByValue(kResult);
+		//取第一个
+		for (Entry<Integer, Integer> entry : kResult.entrySet()) {
+			return entry.getKey();
+		}
+		return null;
+	}
+	
+	/**
+	 * sortMapByKey:(按键的大小排序)
+	 * @author lixingfa
+	 * @date 2018年12月26日下午4:43:38
+	 * @param map
+	 * @return
+	 */
+	public static Map<Double, Integer> sortMapByKey(Map<Double, Integer> map) {
+        if (map == null || map.isEmpty()) {
+            return null;
+        }
+        Map<Double, Integer> sortMap = new TreeMap<Double, Integer>(new MapKeyComparator());
+        sortMap.putAll(map);
+        return sortMap;
+    }
+
+	/**
+     * 使用 Map按value进行排序
+     * @param map
+     * @return
+     */
+    public static Map<Integer, Integer> sortMapByValue(Map<Integer, Integer> oriMap) {
+        if (oriMap == null || oriMap.isEmpty()) {
+            return null;
+        }
+        Map<Integer, Integer> sortedMap = new LinkedHashMap<Integer, Integer>();
+        List<Map.Entry<Integer, Integer>> entryList = new ArrayList<Map.Entry<Integer, Integer>>(
+                oriMap.entrySet());
+        Collections.sort(entryList, new MapValueComparator());
+
+        Iterator<Map.Entry<Integer, Integer>> iter = entryList.iterator();
+        Map.Entry<Integer, Integer> tmpEntry = null;
+        while (iter.hasNext()) {
+            tmpEntry = iter.next();
+            sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());
+        }
+        return sortedMap;
+    }
+
+	
+	private static class MapKeyComparator implements Comparator<Double>{
+	    @Override
+	    public int compare(Double str1, Double str2) {	        
+	        return str1.compareTo(str2);
+	    }
+	}
+	
+	private static class MapValueComparator implements Comparator<Map.Entry<Integer, Integer>> {
+
+	    @Override
+	    public int compare(Entry<Integer, Integer> me1, Entry<Integer, Integer> me2) {
+
+	        return me1.getValue().compareTo(me2.getValue());
+	    }
 	}
 }
