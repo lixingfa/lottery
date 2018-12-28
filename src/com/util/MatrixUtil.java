@@ -2,7 +2,9 @@
  * 
  */
 package com.util;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -53,7 +55,7 @@ public class MatrixUtil {
 		        8,0,4,1,3,2,8,0,7,1,2,4,4,9,6,7,1,9,8,0,7,2,7,0,8,0,0,9,0,7,5,0,8,6,0,9,8,1,8,1,2,7,3,6,1,1,2,6,6,3,8,0,2,2,
 		        8,8,3,0,1,3,4,8,0,0,5,5,8,8,0,1,1,0,7,3,0,2,1,7,5,3,2,3,8,4,7,0,2,6,9,4,1,6,2,6,9,7,3,4,4,7,0,4,5,1,8,4,2,8,8,2,0};
 		MatrixUtil matrixUtil = new MatrixUtil();
-		matrixUtil.test(num, 5, 20,100);
+		matrixUtil.test(num, 10, 20,50);
 	}
 	
 	public void test(int[] num,int how,int k,int testNum){
@@ -62,14 +64,19 @@ public class MatrixUtil {
 			int[] dest = new int[num.length - i];
 			System.arraycopy(num, 0, dest, 0, dest.length);//src:源数组 ,srcPos:源数组要复制的起始位置,dest:目的数组,destPos:目的数组放置的起始位置,length:要复制的长度
 			Map<Integer, Integer> next = getNextMaybe(dest, how, k);
-			int n = 0;
+			int n = 80;
+			int sum = 0;
+			List<Integer> list = new ArrayList<Integer>();
 			for (Entry<Integer, Integer> j : next.entrySet()) {
-				n = j.getKey();
-				break;
+				list.add(j.getKey());
+				sum = sum + j.getValue();
+				if (sum >= n) {
+					break;					
+				}
 			}
 			if (i > 0) {
 				int shiji = num[num.length - i];
-				if (n == shiji) {
+				if (list.contains(shiji)) {
 					total++;
 				}				
 			}
