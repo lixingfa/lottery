@@ -15,7 +15,7 @@ public class MatrixUtil {
 
 	
 	public static void main(String[] args) {
-		int[] data = {0,0,9,0,5,8,3,0,7,6,7,8,8,0,4,1,8,7,8,7,0,3,4,2,9,3,9,3,7,8,6,8,8,1,5,2,0,6,0,7,7,4,9,9,0,4,7,0,7,2,8,4,1,3,
+		int[] num = {0,0,9,0,5,8,3,0,7,6,7,8,8,0,4,1,8,7,8,7,0,3,4,2,9,3,9,3,7,8,6,8,8,1,5,2,0,6,0,7,7,4,9,9,0,4,7,0,7,2,8,4,1,3,
 		        0,2,0,1,5,7,2,3,9,6,4,7,8,9,1,8,5,5,4,0,1,0,9,9,2,5,8,2,6,8,4,2,1,5,8,2,1,8,6,1,0,6,6,0,4,5,3,6,0,8,2,6,6,2,
 		        6,8,0,5,3,3,8,8,1,9,1,5,0,2,0,3,0,5,4,5,5,1,7,1,9,8,9,4,0,1,6,5,6,3,1,4,9,4,9,1,7,9,3,9,3,3,7,4,5,0,9,7,4,5,
 		        5,3,2,7,3,6,2,2,5,3,7,6,8,5,2,0,1,2,0,4,1,9,8,7,3,8,9,3,7,3,7,8,8,6,7,3,2,6,3,6,8,0,1,8,1,5,1,0,4,9,4,9,0,9,
@@ -51,80 +51,48 @@ public class MatrixUtil {
 		        3,3,4,5,7,8,6,5,9,6,4,9,5,2,3,1,8,1,4,9,1,8,1,4,8,2,9,7,2,5,7,8,6,3,7,9,3,5,3,9,0,9,9,4,0,8,0,5,2,3,8,9,7,0,
 		        5,4,3,4,0,4,1,1,7,3,0,1,2,3,5,7,7,9,2,3,1,1,1,9,8,9,0,4,3,1,1,8,5,9,7,4,5,9,3,6,4,1,9,9,2,1,8,3,7,8,2,2,7,2,
 		        8,0,4,1,3,2,8,0,7,1,2,4,4,9,6,7,1,9,8,0,7,2,7,0,8,0,0,9,0,7,5,0,8,6,0,9,8,1,8,1,2,7,3,6,1,1,2,6,6,3,8,0,2,2,
-		        8,8,3,0,1,3,4,8,0,0,5,5,8,8,0,1,1,0,7,3,0,2,1,7,5,3,2,3,8,4,7,0,2,6,9,4,1,6,2,6,9,7,3,4,4,7,0,4,5,1,8,4,2,8};
+		        8,8,3,0,1,3,4,8,0,0,5,5,8,8,0,1,1,0,7,3,0,2,1,7,5,3,2,3,8,4,7,0,2,6,9,4,1,6,2,6,9,7,3,4,4,7,0,4,5,1,8,4,2,8,8,2,0};
 		MatrixUtil matrixUtil = new MatrixUtil();
-		Object[] objects = matrixUtil.arrayToKnowAndResults(data, 5);//指标
-		matrixUtil.KNN(new int[]{1,8,4,2,8}, (int[][])objects[0], (int[])objects[1], 20);//指标
+		matrixUtil.test(num, 5, 20,100);
 	}
 	
-	/**
-	 * getNearSort:(获取待测数据最可能结果的map)
-	 * @author lixingfa
-	 * @date 2018年12月26日下午3:10:26
-	 * @param data 要预测的数据
-	 * @param know 已知的数据
-	 * @param result 已知数据的结果
-	 * @return Map<Double, Integer> key 与已知数据的距离，value 已知数据的结果
-	 */
-	private Map<Double, Integer> getNearSort(int[] data,int[][] know,int[] result){
-		Map<Double, Integer> sqrts = new HashMap<Double, Integer>();//装距离和结果的map 
-		for (int i = 0;i < know.length;i++) {
-			int[] t = know[i];
-			//相减
-			for (int j = 0; j < t.length; j++) {
-				t[j] = t[j] - data[j];
-			}			
-			//平方
-			for (int j = 0; j < t.length; j++) {
-				t[j] = t[j] * t[j];
-			}
-			//求和
-			double sum = 0;
-			for (int j = 0; j < t.length; j++) {
-				sum = sum + t[j];
-			}
-			//开方
-			sum = Math.sqrt(sum) + i * 0.000000001;//避免结果一致时数据覆盖
-			sqrts.put(sum, result[i]);//装结果
-		}
-		//对结果map进行排序
-		sqrts = MapUtil.sortMapByKey(sqrts);
-		return sqrts;
-	}
-	
-	/**
-	 * KNN:(前K)
-	 * @author lixingfa
-	 * @date 2018年12月26日下午4:04:15
-	 * @param data 要预测的数据
-	 * @param know 已知的数据
-	 * @param result 已知数据的结果
-	 * @param k 取前k个里出现最多的
-	 */
-	private Integer KNN(int[] data,int[][] know,int[] result,int k){
-		Map<Double, Integer> sqrts = getNearSort(data, know, result);
-		int i = 0;
-		Map<Integer, Integer> kResult = new HashMap<Integer, Integer>();
-		for (Entry<Double, Integer> entry : sqrts.entrySet()) {
-			if (i < k) {
-				int v = entry.getValue();
-				if (kResult.containsKey(v)) {
-					kResult.put(v, kResult.get(v) + 1);
-				}else {
-					kResult.put(v, 1);					
-				}
-			}else {
+	public void test(int[] num,int how,int k,int testNum){
+		int total = 0;
+		for (int i = testNum; i >= 0; i--) {
+			int[] dest = new int[num.length - i];
+			System.arraycopy(num, 0, dest, 0, dest.length);//src:源数组 ,srcPos:源数组要复制的起始位置,dest:目的数组,destPos:目的数组放置的起始位置,length:要复制的长度
+			Map<Integer, Integer> next = getNextMaybe(dest, how, k);
+			int n = 0;
+			for (Entry<Integer, Integer> j : next.entrySet()) {
+				n = j.getKey();
 				break;
 			}
-			i++;
+			if (i > 0) {
+				int shiji = num[num.length - i];
+				if (n == shiji) {
+					total++;
+				}				
+			}
 		}
-		//按值排序
-		kResult = MapUtil.sortMapByValue(kResult);
-		//取第一个
-		for (Entry<Integer, Integer> entry : kResult.entrySet()) {
-			return entry.getKey();
+		System.out.println((float)total / testNum);
+	}
+	
+	/**
+	 * getNextMaybe:(获取下一个可能的数字)
+	 * @author lixingfa
+	 * @date 2018年12月28日下午4:16:59
+	 * @param num 已知的数据列
+	 * @param how 比较的维度
+	 * @param k 取前k个最相近的
+	 * @return Map<Integer, String> 前k个中，各数字可能出现的百分比
+	 */
+	public Map<Integer, Integer> getNextMaybe(int[] num,int how,int k){
+		Object[] objects = arrayToGroupAndLables(num, how);//训练数据
+		int[] now = new int[how];
+		for (int i = 0,j = how; i < how; i++,j--) {
+			now[i] = num[num.length - j];
 		}
-		return null;
+		return KNN(now, (int[][])objects[0], (int[])objects[1], k);
 	}
 	
 	/**
@@ -135,7 +103,7 @@ public class MatrixUtil {
 	 * @param how 训练数据的个数
 	 * @return Object[] 返回[0]训练数据和[1]标签
 	 */
-	public Object[] arrayToKnowAndResults(int[] num,int how){
+	private Object[] arrayToGroupAndLables(int[] num,int how){
 		int length = num.length - how;
 		int[][] group = new int[length][how];
 		int[] lables = new int[length];
@@ -153,4 +121,70 @@ public class MatrixUtil {
 		return objects;
 	}
 	
+	/**
+	 * getNearSort:(获取待测数据最可能结果的map)
+	 * @author lixingfa
+	 * @date 2018年12月26日下午3:10:26
+	 * @param now 要预测的数据
+	 * @param group 已知的数据
+	 * @param lables 已知数据的结果
+	 * @return Map<Double, Integer> key 与已知数据的距离，value 已知数据的结果
+	 */
+	private Map<Double, Integer> getNearSort(int[] now,int[][] group,int[] lables){
+		Map<Double, Integer> sqrts = new HashMap<Double, Integer>();//装距离和结果的map 
+		for (int i = 0;i < group.length;i++) {
+			int[] t = group[i];
+			//相减
+			for (int j = 0; j < t.length; j++) {
+				t[j] = t[j] - now[j];
+			}			
+			//平方
+			for (int j = 0; j < t.length; j++) {
+				t[j] = t[j] * t[j];
+			}
+			//求和
+			double sum = 0;
+			for (int j = 0; j < t.length; j++) {
+				sum = sum + t[j];
+			}
+			//开方
+			sum = Math.sqrt(sum) + i * 0.000000001;//避免结果一致时数据覆盖
+			sqrts.put(sum, lables[i]);//装结果
+		}
+		//对结果map进行排序
+		sqrts = MapUtil.sortMapByKey(sqrts);
+		return sqrts;
+	}
+	
+	/**
+	 * KNN:(前K)
+	 * @author lixingfa
+	 * @date 2018年12月26日下午4:04:15
+	 * @param now 要预测的数据
+	 * @param group 已知的数据
+	 * @param lables 已知数据的结果
+	 * @param k 取前k个里出现最多的
+	 * @return Map<Integer, Integer> 前k个结果里，各结果的统计情况
+	 */
+	private Map<Integer, Integer> KNN(int[] now,int[][] group,int[] lables,int k){
+		Map<Double, Integer> sqrts = getNearSort(now, group, lables);
+		int i = 0;
+		Map<Integer, Integer> kResult = new HashMap<Integer, Integer>();
+		for (Entry<Double, Integer> entry : sqrts.entrySet()) {
+			if (i < k) {
+				int v = entry.getValue();
+				if (kResult.containsKey(v)) {
+					kResult.put(v, kResult.get(v) + 1);
+				}else {
+					kResult.put(v, 1);					
+				}
+			}else {
+				break;
+			}
+			i++;
+		}
+		//按值排序
+		kResult = MapUtil.sortMapByValue(kResult);
+		return kResult;
+	}
 }
