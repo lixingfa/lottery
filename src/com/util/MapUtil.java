@@ -62,7 +62,7 @@ public class MapUtil {
 	private static class MapKeyComparator implements Comparator<Double>{
 	    @Override
 	    public int compare(Double str1, Double str2) {	        
-	        return str1.compareTo(str2);
+	        return str1.compareTo(str2);//小的排前面
 	    }
 	}
 	
@@ -71,7 +71,7 @@ public class MapUtil {
 	    @Override
 	    public int compare(Entry<Integer, Integer> me1, Entry<Integer, Integer> me2) {
 
-	        return me1.getValue().compareTo(me2.getValue());
+	        return me2.getValue().compareTo(me1.getValue());//大的排前面
 	    }
 	}
 }
